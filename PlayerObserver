@@ -1,0 +1,35 @@
+using UnityEngine;
+using System;
+using System.Collections.Generic;
+                   
+Public class PlaeyrObserver : Singleton<PlayerObserver>
+{
+   public PlayerObserver()
+      => player = GameObeject.Find("Character").GetComponent<PlayerController>();
+   
+   private PlayerController Player;
+   Public PlayerController GetPlayer { get => player; }
+   
+   public Vector3 GetPosition { get => Player.transform.position ;}
+   public bool Distance(Vector3 position, float distance)
+   {
+      float d = Vector3.Distance(GetPosition, position);
+      
+      if(distance >= d) return ture;
+      return false;
+    }
+    
+    public bool IsFront(Vector3 position, bool isLeft)
+     {
+         if(GetPosition.x < position.x)
+         {
+            if(isLeft) return false;
+            return true;
+          }
+          else
+          {
+              if(isLeft) return true;
+              return false;
+          }
+       }
+}
