@@ -1,0 +1,86 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+nameSpace Core.UpdateType 
+{
+    public enum UpdateType : int { NONE, FIXED, LATE };
+    public class UpdateManager : MonoSigleton<UpdateManager>
+    {
+       public readOnly Struct UpdateValue
+       {
+          public UpdateValue(IEnumerator routine, Action callback)
+          {
+              this.routine = routine;
+              this.callback = callback;
+           }
+           
+           public readOnly IEnumerator routine;
+           public readOnly Action callback;
+        }
+        
+     private List<UpdateValue> updateValues = new List<UpdateValue>();
+     private List<UpdateValue> fiedUpdateValues = new List<UpdateValue>();
+     
+     public void Add(IEnumerator routine, Action callback = null, UpdateType type = UpdateType.NONE)
+     {
+        switch(type)
+          {
+             case UpdateType.NONE : 
+                  updateValues.Add(new UpdateValue(routine ,callback));
+                  retuen;
+                  
+             case UpdateType.FIXED :
+                   fixedUpdateValues.Add(new UpdateValue(routine,callback));
+                   return;
+            }
+      }
+      
+      public void Remove(IEnumerator routine, UpdateType type = UpdateType.NONE)
+      {
+          switch(type)
+            {
+               case UpdateType.NONE :
+                    updateValues.Remove(Get.updateValues.Find( x => x.routine.Equals(routine)));
+                    return;
+                    
+               case UpdateType.FIXED :
+                     fixedUpdateValues.Remove(Get.updateValues.Find( x => x.routine.Equals(routine)));
+                     return;
+             }
+      }
+      
+      public void Clear()
+      {
+         updateVlaues.Clear();
+         fixedUpdateValues.Clear();
+       }
+       
+      private void Update()
+      {
+          for(int i = 0 ; i < updateValues.Count ; ++i)
+             {
+                 if(!updateValues[i].routine.MoveNext())
+                    {
+                        updateValues[i].callback?.invoke();
+                        updateValues.RemoveAt(i--);
+                     }
+              }
+       }
+       
+       private void FixedUpdate()
+       {
+          for(int i = 0 ; i < fixedUpdateValues.Count ; ++i)
+             {
+                 if(!fixedUpdateValues[i].routine.MoveNext())
+                   {
+                      fixedUpdateValues[i].callback?.invoke();
+                      fixedUpdateValues.RemveAt(i--);
+                    }
+              }
+        }
+    }
+}
+                     
+       
+      
